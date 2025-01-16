@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+  labels:
+    app: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: backend
+        image: farooq722/backend:3.0
+        ports:
+        - containerPort: 3005
+        env:
+        - name: MONGO_URI
+          valueFrom:
+            configMapKeyRef:
+              name: mongo-config
+              key: MONGO_URI
+        - name: PORT
+          valueFrom:
+            configMapKeyRef:
+              name: mongo-config
+              key: PORT
+        - name: FRONTEND_URL
+          valueFrom:
+            configMapKeyRef:
+              name: mongo-config
+              key: FRONTEND_URL
+        - name: MONGO_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: mongo-secret
+              key: username  # Reference the username in the Secret
+        - name: MONGO_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mongo-secret
+              key: password  # Reference the password in the Secret
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+spec:
+  type: NodePort
+  selector:
+    app: backend
+  ports:
+    - protocol: TCP
+      port: 80           # Exposed port on the service
+      targetPort: 3009    # Port that your container is listening on (updated to 3009)
+      nodePort: 30007     # Port on the node (accessible from outside the cluster)

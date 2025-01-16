@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-deployment
+  labels:
+    app: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+      - name: frontend
+        image: farooq722/frontend:2.0
+        ports:
+        - containerPort: 80  # Make sure this is the correct port your React app listens on
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-service
+spec:
+  type: NodePort  # This makes the service accessible only within the cluster
+  selector:
+    app: frontend
+  ports:
+    - protocol: TCP
+      port: 80         # Expose this port inside the cluster
+      targetPort: 5173
+      nodePort: 31167    # Should match the container port
