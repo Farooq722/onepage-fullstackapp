@@ -18,6 +18,12 @@ app.use(cors(
     }
 ));
 
+app.get("/", (req, res) => {
+    res.json({
+        msg: "Hellow moto"
+    });
+})
+
 app.post("/login", async (req, res) => {
     try {
         const { name, email, password, number } = req.body;
