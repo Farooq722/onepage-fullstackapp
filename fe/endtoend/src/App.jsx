@@ -26,7 +26,7 @@ const App = () => {
   
     // Here you can handle API calls to send the form data
     try {
-      const response = await fetch("http://localhost:3007/login", {
+      const response = await fetch("https://onepage-fullstackapp-btv3.vercel.app/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
